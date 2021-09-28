@@ -1,0 +1,15 @@
+IF EXIST "%DEPLOYMENT_SOURCE%\composer.json" (
+  cd %DEPLOYMENT_SOURCE%
+
+  IF NOT EXIST "%DEPLOYMENT_SOURCE%\composer.phar" (
+    echo Composer.phar not found. Downloading...
+    call curl -s https://getcomposer.org/installer | php
+    IF !ERRORLEVEL! NEQ 0 goto error
+  ) ELSE (
+      echo Attempting to update composer.phar
+      php composer.phar self-update
+  )
+  
+  call php composer.phar install --no-dev
+  IF !ERRORLEVEL! NEQ 0 goto error
+)
